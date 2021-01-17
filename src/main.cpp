@@ -49,7 +49,7 @@ void setup() {
   tft.setFreeFont(FF14);
   tft.drawString("°C", 310, 115);
   tft.drawString("%", 310, 165);
-  tft.setFreeFont(FF8);
+  tft.setFreeFont(FF9);
   tft.drawString("kPa", 310, 215);
   tft.setTextDatum(ML_DATUM);
 
