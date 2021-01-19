@@ -1,19 +1,16 @@
-#include "weatherstation.h"
+#include "WeatherStation1.h"
 
-const int PORTRAIT = 3;
+WeatherStation1::WeatherStation1() {
+  this->tft = TFT_eSPI(320,240);
 
+  this->temperature = 22.3;
+  this->humidity = 45;
+  this->pressure = 1009;
+}
 
-
-float temperature = 22.3;
-int humidity = 45;
-int pressure = 1010;
-
-void WeatherStationSetup(TFT_eSPI tft) {
+void WeatherStation1::Setup() {
+  TFT_eSPI& tft = this->tft;
   
-  tft.setTextSize(1);
-  tft.fillScreen(TFT_BLACK);
-  tft.setRotation(PORTRAIT);
-
   tft.fillScreen(TFT_BLUE);
   
   tft.setTextDatum(MC_DATUM);
@@ -54,18 +51,18 @@ void WeatherStationSetup(TFT_eSPI tft) {
   tft.setFreeFont(FF20);
 }
 
-void WeatherStationLoop(TFT_eSPI tft) {
+void WeatherStation1::Loop() {
+  TFT_eSPI& tft = this->tft;
+
   tft.drawFloat(temperature, 1, 170, 115);
   tft.drawNumber(humidity, 170, 165);
   tft.drawNumber(pressure, 170, 215);
   delay(2000);
 }
 
-void WeatherStation() {
-    TFT_eSPI tft = TFT_eSPI();
-    WeatherStationSetup(tft);
-
-    for(;;) {
-        WeatherStationLoop(tft);
-    }
+void WeatherStation1::Run() {
+   this->Setup();
+   for (;;) {
+      this->Loop();
+   }   
 }

@@ -1,4 +1,5 @@
-#include "weatherstation.h"
+//#include "weatherstation.h"
+#include "WeatherStation1.h"
 
 #include <TFT_eSPI.h>
 

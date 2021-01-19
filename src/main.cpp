@@ -4,15 +4,11 @@
 
 #define GFX_WIDTH 320
 #define GFX_HEIGHT 240
-//#define fontW 8
-//#define fontH 10
-//#define fontW 16
-//#define fontH 20
 #define fontW 24
 #define fontH 30
 
 //COMMENT OUT IF DISPLAY IS UPSIDE DOWN
-//#define UPSIDEDOWN
+#define UPSIDEDOWN
 
 using namespace Menu;
 
@@ -21,7 +17,6 @@ TFT_eSPI tft = TFT_eSPI();
 result doAlert(eventMask e, prompt &item);
 
 serialIn serial(Serial);
-//menuIn* inputsList[]={&joystickBtns,&serial};
 
 const colorDef<uint16_t> colors[6] MEMMODE={
   {{(uint16_t)Black,(uint16_t)Black}, {(uint16_t)Black, (uint16_t)LighterBlue,  (uint16_t)Blue}},//bgColor
@@ -53,8 +48,14 @@ keyIn<3> topButtons(topButtons_map);
 */
 //menuIn* in[]={&topButtons};
 
+
+void weatherstation_visual1() {
+  WeatherStation1 ws1;
+  ws1.Run();
+}
+
 MENU(subMenu,"Weather Station",doNothing,noEvent,noStyle
-  ,OP("Visual 1",doNothing,noEvent)
+  ,OP("Visual 1",weatherstation_visual1,enterEvent)
   ,OP("Visual 2",doNothing,noEvent)
   ,EXIT(BACKMENU)
 );
