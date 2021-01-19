@@ -67,10 +67,6 @@ NAVROOT(nav,mainMenu,MAX_DEPTH,serial,out);
 
 void setup() {
   Serial.begin(115200);
-  delay(5000);
-  for (int i=0; i<100; i++) {
-    Serial.println(i);
-  }
    // WeatherStation();
   tft.begin();
   tft.setRotation(3);
