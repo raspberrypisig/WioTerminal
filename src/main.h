@@ -4,6 +4,7 @@
 
 #include <menu.h>
 #include <menuIO/serialIn.h>
+//#include <menuIO/altKeyIn.h>
 #include <menuIO/TFT_eSPIOut.h>
 
 #define Black RGB565(0,0,0)
@@ -21,3 +22,11 @@
 #define Magenta RGB565(255,0,255)
 #define Yellow RGB565(255,255,0)
 #define White RGB565(255,255,255)
+
+#define BTN_SEL WIO_5S_PRESS  // Select button
+#define BTN_UP WIO_5S_UP // Up
+#define BTN_DOWN WIO_5S_DOWN // Down
+#define BTN_LEFT WIO_5S_LEFT // Left
+#define BTN_RIGHT WIO_5S_RIGHT // Right
+
+#define BACKMENU "<---Back--------"

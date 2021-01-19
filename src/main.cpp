@@ -11,6 +11,8 @@
 #define fontW 24
 #define fontH 30
 
+//COMMENT OUT IF DISPLAY IS UPSIDE DOWN
+//#define UPSIDEDOWN
 
 using namespace Menu;
 
@@ -19,6 +21,7 @@ TFT_eSPI tft = TFT_eSPI();
 result doAlert(eventMask e, prompt &item);
 
 serialIn serial(Serial);
+//menuIn* inputsList[]={&joystickBtns,&serial};
 
 const colorDef<uint16_t> colors[6] MEMMODE={
   {{(uint16_t)Black,(uint16_t)Black}, {(uint16_t)Black, (uint16_t)LighterBlue,  (uint16_t)Blue}},//bgColor
@@ -28,17 +31,6 @@ const colorDef<uint16_t> colors[6] MEMMODE={
   {{(uint16_t)White,(uint16_t)Gray},  {(uint16_t)Black, (uint16_t)Blue,  (uint16_t)White}},//cursorColor
   {{(uint16_t)White,(uint16_t)Yellow},{(uint16_t)Black,  (uint16_t)Red,   (uint16_t)Red}},//titleColor
 };
-
-/*
-const colorDef<uint16_t> colors[6] ={
-  {{(uint16_t)Black,(uint16_t)Black}, {(uint16_t)Black, (uint16_t)Blue,  (uint16_t)Blue}},//bgColor
-  {{(uint16_t)Gray, (uint16_t)Gray},  {(uint16_t)White, (uint16_t)White, (uint16_t)White}},//fgColor
-  {{(uint16_t)White,(uint16_t)Black}, {(uint16_t)Yellow,(uint16_t)Yellow,(uint16_t)Red}},//valColor
-  {{(uint16_t)White,(uint16_t)Black}, {(uint16_t)White, (uint16_t)Yellow,(uint16_t)Yellow}},//unitColor
-  {{(uint16_t)White,(uint16_t)Gray},  {(uint16_t)Black, (uint16_t)Blue,  (uint16_t)White}},//cursorColor
-  {{(uint16_t)White,(uint16_t)Yellow},{(uint16_t)Blue,  (uint16_t)Red,   (uint16_t)Red}},//titleColor
-};
-*/
 
 const panel panels[]  = {{1,1, 19, GFX_HEIGHT / fontH}};
 //const panel panels[]  = {{0,0, GFX_WIDTH / fontW, GFX_HEIGHT / fontH}};
@@ -51,34 +43,75 @@ TFT_eSPIOut eSpiOut(tft,colors,eSpiTops,pList,fontW,(fontH+1));
 menuOut* constMEM outputs[] ={&eSpiOut};//list of output devices
 outputsList out(outputs,1);//outputs list controller
 
+/*
+keyMap topButtons_map[]={
+ {WIO_KEY_A, defaultNavCodes[enterCmd].ch, INPUT_PULLUP} ,
+ {WIO_KEY_B, defaultNavCodes[downCmd].ch, INPUT_PULLUP} ,
+ {WIO_KEY_C, defaultNavCodes[upCmd].ch, INPUT_PULLUP}
+};
+keyIn<3> topButtons(topButtons_map);
+*/
+//menuIn* in[]={&topButtons};
+
 MENU(subMenu,"Weather Station",doNothing,noEvent,noStyle
-  ,OP("Weather Station 1",doNothing,noEvent)
-  ,OP("Weather Station 2",doNothing,noEvent)
-  ,EXIT("<Back")
+  ,OP("Visual 1",doNothing,noEvent)
+  ,OP("Visual 2",doNothing,noEvent)
+  ,EXIT(BACKMENU)
 );
 
 MENU(mainMenu,"Menu",doNothing,noEvent,wrapStyle
   ,OP("Version", doNothing, noEvent)
   ,SUBMENU(subMenu)
-  ,EXIT("<Back")
+  ,OP("Dummy", doNothing, noEvent)
+  ,OP("Dummy", doNothing, noEvent)
 );
 
 NAVROOT(nav,mainMenu,MAX_DEPTH,serial,out);
+
+navCmds nextCmd = noCmd;
+
+void topButton1() {
+  nextCmd = enterCmd;
+}
+
+void topButton2() {
+  nextCmd = downCmd;
+}
+
+void topButton3() {
+  nextCmd = upCmd;
+}
 
 void setup() {
   Serial.begin(115200);
    // WeatherStation();
   tft.begin();
+  tft.setRotation(1);
+  #ifdef UPSIDEDOWN
   tft.setRotation(3);
-  //tft.setTextSize(2);
+  #endif 
   tft.setTextSize(3);
   tft.fillScreen(TFT_BLACK);
+
+  pinMode(WIO_KEY_A, INPUT_PULLUP);
+  pinMode(WIO_KEY_B, INPUT_PULLUP);
+  pinMode(WIO_KEY_C, INPUT_PULLUP);
   
-  //tft.setTextDatum(MC_DATUM);
-  //tft.setTextColor(TFT_GREEN);
-  //tft.setFreeFont(FF18);
+  #ifdef UPSIDEDOWN
+  attachInterrupt(digitalPinToInterrupt(WIO_KEY_A), topButton1, FALLING);
+  attachInterrupt(digitalPinToInterrupt(WIO_KEY_B), topButton2, FALLING);
+  attachInterrupt(digitalPinToInterrupt(WIO_KEY_C), topButton3, FALLING);
+  #else
+  attachInterrupt(digitalPinToInterrupt(WIO_KEY_A), topButton3, FALLING);
+  attachInterrupt(digitalPinToInterrupt(WIO_KEY_B), topButton2, FALLING);
+  attachInterrupt(digitalPinToInterrupt(WIO_KEY_C), topButton1, FALLING);
+  #endif
 }
 
 void loop() {
   nav.poll();
+  if (nextCmd != noCmd) {
+    nav.doNav(nextCmd);
+    nextCmd = noCmd;
+  }
 }
