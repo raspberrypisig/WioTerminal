@@ -1,9 +1,12 @@
+#ifndef _WEATHER_STATION_1
+#define _WEATHER_STATION_1
+
 #include "Free_Fonts.h"
 #include "TFT_eSPI.h"
 #include "Version.h"
 #include "ArduinoSketchBase.h"
 
-class WeatherStation1 : protected ArduinoSketchBase {
+class WeatherStation1 : public ArduinoSketchBase {
     private: 
       TFT_eSPI tft;
       float temperature;
@@ -19,3 +22,5 @@ class WeatherStation1 : protected ArduinoSketchBase {
       void Run();
 
 };
+
+#endif
