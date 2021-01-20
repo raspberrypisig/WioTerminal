@@ -50,6 +50,7 @@ keyIn<3> topButtons(topButtons_map);
 
 RegisterSketches *registerSketches = new RegisterSketches();
 
+/*
 void weatherstation_visual1() {
   //WeatherStation1 ws1;
   //ws1.Run();
@@ -58,9 +59,20 @@ void weatherstation_visual1() {
     sketch->Run();
   }
 }
+*/
+
+result showEvent(eventMask e,navNode& nav,prompt& item) {
+  char *menuTitle;
+  menuTitle = (char*) item.getText();
+  ArduinoSketchBase *sketch = registerSketches->Find(String(menuTitle));
+  sketch->Run();
+  return proceed;
+}
+
+
 
 MENU(subMenu,"Weather Station",doNothing,noEvent,noStyle
-  ,OP("Visual 1",weatherstation_visual1,enterEvent)
+  ,OP("Visual 1",showEvent,enterEvent)
   ,OP("Visual 2",doNothing,noEvent)
   ,EXIT(BACKMENU)
 );
