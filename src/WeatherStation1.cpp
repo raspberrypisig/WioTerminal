@@ -8,7 +8,13 @@ WeatherStation1::WeatherStation1() {
   this->pressure = 1009;
 }
 
-void WeatherStation1::Setup() {
+
+void WeatherStation1::Run() {
+  ArduinoSketchBase::Run();
+}
+
+
+void WeatherStation1::Setup()  {
   TFT_eSPI& tft = this->tft;
   
   tft.fillScreen(TFT_BLUE);
@@ -51,7 +57,7 @@ void WeatherStation1::Setup() {
   tft.setFreeFont(FF20);
 }
 
-void WeatherStation1::Loop() {
+void WeatherStation1::Loop()  {
   TFT_eSPI& tft = this->tft;
 
   tft.drawFloat(temperature, 1, 170, 115);
@@ -60,9 +66,11 @@ void WeatherStation1::Loop() {
   delay(2000);
 }
 
+/*
 void WeatherStation1::Run() {
    this->Setup();
    for (;;) {
       this->Loop();
    }   
 }
+*/
