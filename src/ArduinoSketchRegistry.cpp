@@ -1,9 +1,8 @@
 #include "ArduinoSketchRegistry.h"
 
 
-ArduinoSketchRegistry::ArduinoSketchRegistry() {
-  this->Register("Visual 1", new WeatherStation1());   
-}
+//ArduinoSketchRegistry::ArduinoSketchRegistry() { 
+//}
 
 void ArduinoSketchRegistry::Register(String menuName, ArduinoSketchBase* sketch) {
   arduinoSketchMap.insert(std::make_pair(menuName, sketch));

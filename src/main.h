@@ -10,7 +10,7 @@
 //#include <menuIO/altKeyIn.h>
 #include <menuIO/TFT_eSPIOut.h>
 #include "ArduinoSketchBase.h"
-#include "ArduinoSketchRegistry.h"
+#include "RegisterSketches.h"
 
 #define Black RGB565(0,0,0)
 #define Red	RGB565(255,0,0)

@@ -48,10 +48,15 @@ keyIn<3> topButtons(topButtons_map);
 */
 //menuIn* in[]={&topButtons};
 
+RegisterSketches *registerSketches = new RegisterSketches();
 
 void weatherstation_visual1() {
-  WeatherStation1 ws1;
-  ws1.Run();
+  //WeatherStation1 ws1;
+  //ws1.Run();
+  ArduinoSketchBase *sketch = registerSketches->Find("Visual 1");
+  if (sketch != NULL) {
+    sketch->Run();
+  }
 }
 
 MENU(subMenu,"Weather Station",doNothing,noEvent,noStyle
@@ -83,6 +88,8 @@ void topButton3() {
   nextCmd = upCmd;
 }
 
+
+
 void setup() {
   Serial.begin(115200);
    // WeatherStation();
@@ -93,6 +100,8 @@ void setup() {
   #endif 
   tft.setTextSize(3);
   tft.fillScreen(TFT_BLACK);
+
+  
 
   pinMode(WIO_KEY_A, INPUT_PULLUP);
   pinMode(WIO_KEY_B, INPUT_PULLUP);

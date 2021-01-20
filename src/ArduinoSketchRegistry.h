@@ -2,7 +2,6 @@
 #define _ARDUINO_SKETCH_REGISTRY
 
 #include "ArduinoSketchBase.h"
-#include "WeatherStation1.h"
 #include "Arduino.h"
 #undef min
 #undef max
@@ -20,7 +19,7 @@ class ArduinoSketchRegistry {
   private:
     std::map<String, ArduinoSketchBase*> arduinoSketchMap;
   public:
-    ArduinoSketchRegistry();
+    //ArduinoSketchRegistry();
     void Register(String menuName, ArduinoSketchBase* sketch);
     ArduinoSketchBase* Find(String menuName);
 };
