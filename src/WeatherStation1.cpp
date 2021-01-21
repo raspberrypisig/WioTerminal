@@ -8,11 +8,9 @@ WeatherStation1::WeatherStation1() {
   this->pressure = 1009;
 }
 
-
 void WeatherStation1::Run() {
   ArduinoSketchBase::Run();
 }
-
 
 void WeatherStation1::Setup()  {
   TFT_eSPI& tft = this->tft;
@@ -66,11 +64,3 @@ void WeatherStation1::Loop()  {
   delay(2000);
 }
 
-/*
-void WeatherStation1::Run() {
-   this->Setup();
-   for (;;) {
-      this->Loop();
-   }   
-}
-*/

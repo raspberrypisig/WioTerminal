@@ -1,12 +1,12 @@
-#ifndef _WEATHER_STATION_1_H_
-#define _WEATHER_STATION_1_H_
+#ifndef _WEATHER_STATION_2_H_
+#define _WEATHER_STATION_2_H_
 
 #include "Free_Fonts.h"
 #include "TFT_eSPI.h"
 #include "Version.h"
 #include "ArduinoSketchBase.h"
 
-class WeatherStation1 : public ArduinoSketchBase {
+class WeatherStation2 : public ArduinoSketchBase {
     private: 
       TFT_eSPI tft;
       float temperature;
@@ -18,7 +18,7 @@ class WeatherStation1 : public ArduinoSketchBase {
       void Loop() override;
 
     public:
-      WeatherStation1();
+      WeatherStation2();
       void Run();
 
 };

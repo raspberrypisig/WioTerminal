@@ -60,16 +60,15 @@ result showEvent(eventMask e,navNode& nav,prompt& item) {
 }
 
 MENU(subMenu,"Weather Station",doNothing,noEvent,noStyle
-  ,OP("Visual 1",showEvent,enterEvent)
-  ,OP("Visual 2",doNothing,noEvent)
+  ,OP("Visual 1", showEvent, enterEvent)
+  ,OP("Visual 2", showEvent, enterEvent)
   ,EXIT(BACKMENU)
 );
 
 MENU(mainMenu,"Menu",doNothing,noEvent,wrapStyle
-  ,OP("Version", doNothing, noEvent)
+  ,OP("Version", showEvent, enterEvent)
   ,SUBMENU(subMenu)
-  ,OP("Dummy", doNothing, noEvent)
-  ,OP("Dummy", doNothing, noEvent)
+  ,OP("Wifi", showEvent, enterEvent)
 );
 
 NAVROOT(nav,mainMenu,MAX_DEPTH,serial,out);
