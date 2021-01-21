@@ -49,27 +49,15 @@ keyIn<3> topButtons(topButtons_map);
 //menuIn* in[]={&topButtons};
 
 RegisterSketches *registerSketches = new RegisterSketches();
-
-/*
-void weatherstation_visual1() {
-  //WeatherStation1 ws1;
-  //ws1.Run();
-  ArduinoSketchBase *sketch = registerSketches->Find("Visual 1");
-  if (sketch != NULL) {
-    sketch->Run();
-  }
-}
-*/
+ArduinoSketchBase *sketch = NULL;
 
 result showEvent(eventMask e,navNode& nav,prompt& item) {
   char *menuTitle;
   menuTitle = (char*) item.getText();
-  ArduinoSketchBase *sketch = registerSketches->Find(String(menuTitle));
+  sketch = registerSketches->Find(String(menuTitle));
   sketch->Run();
   return proceed;
 }
-
-
 
 MENU(subMenu,"Weather Station",doNothing,noEvent,noStyle
   ,OP("Visual 1",showEvent,enterEvent)
@@ -89,7 +77,18 @@ NAVROOT(nav,mainMenu,MAX_DEPTH,serial,out);
 navCmds nextCmd = noCmd;
 
 void topButton1() {
-  nextCmd = enterCmd;
+  if (sketch == NULL) {
+   nextCmd = enterCmd;
+  }
+
+  else {
+    sketch->Quit();
+    nextCmd = noCmd;
+    tft.fillScreen(TFT_BLACK);
+    nav.doNav(escCmd);
+    sketch = NULL;
+  }
+  
 }
 
 void topButton2() {

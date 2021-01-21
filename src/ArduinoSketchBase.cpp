@@ -3,8 +3,12 @@
 void ArduinoSketchBase::Run() {
     this->Setup();
 
-    for(;;) {
+    while(!done) {
         this->Loop();
     }
 }
 
+
+void ArduinoSketchBase::Quit() {
+    done = true;
+}
