@@ -81,6 +81,7 @@ void topButton1() {
   }
 
   else {
+
     sketch->Quit();
     nextCmd = noCmd;
     tft.fillScreen(TFT_BLACK);
