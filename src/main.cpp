@@ -59,16 +59,21 @@ result showEvent(eventMask e,navNode& nav,prompt& item) {
   return proceed;
 }
 
-MENU(subMenu,"Weather Station",doNothing,noEvent,noStyle
+MENU(weatherSubMenu,"Weather Station",doNothing,noEvent,noStyle
   ,OP("Visual 1", showEvent, enterEvent)
   ,OP("Visual 2", showEvent, enterEvent)
   ,EXIT(BACKMENU)
 );
 
+MENU(wifiSubMenu,"Wifi",doNothing,noEvent,noStyle
+  ,OP("Wifi Basic", showEvent, enterEvent)
+  ,EXIT(BACKMENU)
+);
+
 MENU(mainMenu,"Menu",doNothing,noEvent,wrapStyle
   ,OP("Version", showEvent, enterEvent)
-  ,SUBMENU(subMenu)
-  ,OP("Wifi", showEvent, enterEvent)
+  ,SUBMENU(weatherSubMenu)
+  ,SUBMENU(wifiSubMenu)
 );
 
 NAVROOT(nav,mainMenu,MAX_DEPTH,serial,out);
