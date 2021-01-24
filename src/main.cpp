@@ -67,6 +67,7 @@ MENU(weatherSubMenu,"Weather Station",doNothing,noEvent,noStyle
 
 MENU(wifiSubMenu,"Wifi",doNothing,noEvent,noStyle
   ,OP("Wifi Basic", showEvent, enterEvent)
+  ,OP("My Devices", showEvent, enterEvent)
   ,EXIT(BACKMENU)
 );
 

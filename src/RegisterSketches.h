@@ -4,6 +4,7 @@
 #include "WeatherStation2.h"
 #include "ProgramVersion.h"
 #include "WifiBasic.h"
+#include "WifiMyDevices.h"
 
 
 

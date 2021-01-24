@@ -24,8 +24,11 @@ void WifiBasic::displayMacAddress(byte* mac) {
 
 void WifiBasic::Setup() {
     //Serial.begin(115200);
-    wifiMulti.addAP("MelbPC-NUE", "peachspeak38");
     wifiMulti.addAP("MelbPC-NUE-5", "peachspeak38");
+    wifiMulti.addAP("MelbPC-NUE", "peachspeak38");
+    wifiMulti.addAP("mycrib5g", "peachspeak38");   
+    wifiMulti.addAP("mycrib", "peachspeak38");
+
     Serial.println("Connecting Wifi...");
     byte mac[8];
 

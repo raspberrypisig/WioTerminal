@@ -6,5 +6,5 @@ RegisterSketches::RegisterSketches() {
    Register("Visual 2",           new WeatherStation2());
    Register("Version",            new ProgramVersion());
    Register("Wifi Basic",         new WifiBasic());
-
+   Register("My Devices",         new WifiMyDevices());
 }
