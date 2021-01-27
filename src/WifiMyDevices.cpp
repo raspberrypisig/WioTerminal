@@ -23,6 +23,11 @@ void WifiMyDevices::browseService(const char * service, const char * proto){
             Serial.print(":");
             Serial.print(MDNS.port(i));
             Serial.println(")");
+            mDNSDevice d;
+            d.hostname = MDNS.hostname(i);
+            d.ip = MDNS.IP(i).toString();
+            d.service = String(service);
+            devices.push_back(d);
         }
     }
     Serial.println();
@@ -42,7 +47,46 @@ void WifiMyDevices::Setup() {
         }
     }
 
+    tft.fillScreen(TFT_BLUE);
+    tft.setTextDatum(MC_DATUM);
+    tft.setTextColor(TFT_GREEN);
+    tft.setFreeFont(FF18);
+    tft.drawString("Finding Devices...", 160, 120);
+
     browseService("smb", "tcp");
+    browseService("workstation", "tcp");
+
+    Serial.print("The number of devices found:");
+    unsigned int devicesFound = devices.size();
+    Serial.println(devicesFound);
+
+    if (devicesFound > 0 ) {
+        Serial.println("FOUND DEVICES.");
+
+        tft.fillScreen(TFT_RED);
+        tft.setFreeFont(FF17);
+        tft.setTextColor(tft.color565(224,225,232));
+        tft.setCursor((320 - tft.textWidth("Devices"))/2, 25);
+        tft.print("Devices");
+        tft.fillRoundRect(10, 45, 300, 55, 5, tft.color565(255, 194, 179));
+        tft.fillRoundRect(10, 105, 300, 55, 5, tft.color565(255, 194, 179));
+        tft.fillRoundRect(10, 165, 300, 55, 5, tft.color565(255, 194, 179));
+        tft.setFreeFont(FM9);
+        tft.setTextColor(TFT_BLACK);
+        tft.drawString("Hostname", 75, 50);
+        tft.drawString("IP Address", 75, 110);
+        tft.drawString("Service", 75, 170);
+        tft.setFreeFont(FMB12);
+        tft.setTextDatum(TL_DATUM);
+        tft.setTextColor(TFT_BLACK);
+        tft.drawString(devices[deviceIndex].hostname, 30, 75);
+        tft.setTextColor(TFT_BLUE);
+        tft.drawString(devices[deviceIndex].ip, 30, 135);
+        tft.setTextColor(TFT_BLACK);
+        tft.drawString(devices[deviceIndex].service, 30, 195); 
+
+    }
+
     /*
      browseService("http", "tcp");
      delay(1000);
@@ -66,4 +110,6 @@ void WifiMyDevices::Setup() {
 
 void WifiMyDevices::Loop() {
 
+
+  delay(100);
 }
