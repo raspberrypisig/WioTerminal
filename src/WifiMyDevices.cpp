@@ -54,7 +54,7 @@ void WifiMyDevices::Setup() {
     tft.drawString("Finding Devices...", 160, 120);
 
     browseService("smb", "tcp");
-    browseService("workstation", "tcp");
+    browseService("ssh", "tcp");
 
     Serial.print("The number of devices found:");
     unsigned int devicesFound = devices.size();
