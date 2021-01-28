@@ -83,6 +83,7 @@ void WifiMyDevices::Setup() {
 
     browseService("smb", "tcp");
     browseService("ssh", "tcp");
+    browseService("workstation", "tcp");
 
     Serial.print("The number of devices found:");
     numberOfDevicesFound = devices.size();
