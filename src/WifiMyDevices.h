@@ -23,7 +23,9 @@ class WifiMyDevices : public ArduinoSketchBase {
       TFT_eSPI tft;
       std::vector<mDNSDevice> devices;
       int deviceIndex = 0;
+      unsigned int numberOfDevicesFound=0;
       void browseService(const char *service, const char *proto);
+      void ShowDevice();
 
     protected:
       void Setup() override;

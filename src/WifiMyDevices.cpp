@@ -37,32 +37,8 @@ void WifiMyDevices::Run() {
     ArduinoSketchBase::Run();
 }
 
-void WifiMyDevices::Setup() {
-    Serial.begin(115200);
 
-    if (!MDNS.begin("Mohan_WioTerminal")) {
-        Serial.println("Error setting up MDNS responder!");
-        while(1){
-            delay(1000);
-        }
-    }
-
-    tft.fillScreen(TFT_BLUE);
-    tft.setTextDatum(MC_DATUM);
-    tft.setTextColor(TFT_GREEN);
-    tft.setFreeFont(FF18);
-    tft.drawString("Finding Devices...", 160, 120);
-
-    browseService("smb", "tcp");
-    browseService("ssh", "tcp");
-
-    Serial.print("The number of devices found:");
-    unsigned int devicesFound = devices.size();
-    Serial.println(devicesFound);
-
-    if (devicesFound > 0 ) {
-        Serial.println("FOUND DEVICES.");
-
+void WifiMyDevices::ShowDevice() {
         tft.fillScreen(TFT_RED);
         tft.setFreeFont(FF17);
         tft.setTextColor(tft.color565(224,225,232));
@@ -83,8 +59,38 @@ void WifiMyDevices::Setup() {
         tft.setTextColor(TFT_BLUE);
         tft.drawString(devices[deviceIndex].ip, 30, 135);
         tft.setTextColor(TFT_BLACK);
-        tft.drawString(devices[deviceIndex].service, 30, 195); 
+        tft.drawString(devices[deviceIndex].service, 30, 195);     
+}
 
+void WifiMyDevices::Setup() {
+    Serial.begin(115200);
+
+    pinMode(WIO_5S_UP, INPUT_PULLUP);
+    pinMode(WIO_5S_DOWN, INPUT_PULLUP);
+
+    if (!MDNS.begin("Mohan_WioTerminal")) {
+        Serial.println("Error setting up MDNS responder!");
+        while(1){
+            delay(1000);
+        }
+    }
+
+    tft.fillScreen(TFT_BLUE);
+    tft.setTextDatum(MC_DATUM);
+    tft.setTextColor(TFT_GREEN);
+    tft.setFreeFont(FF18);
+    tft.drawString("Finding Devices...", 160, 120);
+
+    browseService("smb", "tcp");
+    browseService("ssh", "tcp");
+
+    Serial.print("The number of devices found:");
+    numberOfDevicesFound = devices.size();
+    Serial.println(numberOfDevicesFound);
+
+    if (numberOfDevicesFound > 0 ) {
+        Serial.println("FOUND DEVICES.");
+        ShowDevice();
     }
 
     /*
@@ -110,6 +116,20 @@ void WifiMyDevices::Setup() {
 
 void WifiMyDevices::Loop() {
 
+ if (digitalRead(WIO_5S_UP) == LOW) {
+  deviceIndex = deviceIndex - 1;
+  if (deviceIndex < 0) {
+      deviceIndex = numberOfDevicesFound - 1; 
+  }
+  ShowDevice();
+  Serial.println("UP");
+ }
 
-  delay(100);
+ else if (digitalRead(WIO_5S_DOWN) == LOW) {
+  deviceIndex = (deviceIndex + 1) %  numberOfDevicesFound;
+  Serial.println("DOWN");
+  ShowDevice();
+ }
+
+  delay(500);
 }
