@@ -75,6 +75,7 @@ MENU(mainMenu,"Menu",doNothing,noEvent,wrapStyle
   ,OP("Version", showEvent, enterEvent)
   ,SUBMENU(weatherSubMenu)
   ,SUBMENU(wifiSubMenu)
+  ,OP("Buzzer", showEvent, enterEvent)
 );
 
 NAVROOT(nav,mainMenu,MAX_DEPTH,serial,out);

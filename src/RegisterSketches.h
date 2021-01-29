@@ -5,6 +5,7 @@
 #include "ProgramVersion.h"
 #include "WifiBasic.h"
 #include "WifiMyDevices.h"
+#include "Buzzer.h"
 
 
 

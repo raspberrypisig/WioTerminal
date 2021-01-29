@@ -7,4 +7,5 @@ RegisterSketches::RegisterSketches() {
    Register("Version",            new ProgramVersion());
    Register("Wifi Basic",         new WifiBasic());
    Register("My Devices",         new WifiMyDevices());
+   Register("Buzzer",             new Buzzer());
 }
