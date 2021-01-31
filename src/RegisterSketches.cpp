@@ -8,4 +8,6 @@ RegisterSketches::RegisterSketches() {
    Register("Wifi Basic",         new WifiBasic());
    Register("My Devices",         new WifiMyDevices());
    Register("Buzzer",             new Buzzer());
+   Register("DigitalIO",          new DigitalIO());
+   Register("DACTest",            new DACTest());
 }

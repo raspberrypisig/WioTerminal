@@ -35,5 +35,6 @@
 #define BTN_RIGHT WIO_5S_RIGHT // Right
 
 #define BACKMENU "<---Back--------"
+#define NEXTMENU "--Next--------->"
 
 #endif

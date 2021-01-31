@@ -6,6 +6,8 @@
 #include "WifiBasic.h"
 #include "WifiMyDevices.h"
 #include "Buzzer.h"
+#include "DigitalIO.h"
+#include "DACTest.h"
 
 
 

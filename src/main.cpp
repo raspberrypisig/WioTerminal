@@ -1,6 +1,6 @@
 #include "main.h"
 
-#define MAX_DEPTH 2
+#define MAX_DEPTH 4
 
 #define GFX_WIDTH 320
 #define GFX_HEIGHT 240
@@ -71,11 +71,23 @@ MENU(wifiSubMenu,"Wifi",doNothing,noEvent,noStyle
   ,EXIT(BACKMENU)
 );
 
+MENU(ioSubMenu, "IO", doNothing,noEvent,noStyle
+   ,OP("DigitalIO", showEvent, enterEvent)
+   ,OP("DACTest", showEvent, enterEvent)
+  ,EXIT(BACKMENU)
+);
+
+MENU(page2SubMenu, "----Page 2----", doNothing,noEvent,noStyle
+  ,SUBMENU(ioSubMenu) 
+  ,EXIT(BACKMENU)
+);
+
 MENU(mainMenu,"Menu",doNothing,noEvent,wrapStyle
   ,OP("Version", showEvent, enterEvent)
   ,SUBMENU(weatherSubMenu)
   ,SUBMENU(wifiSubMenu)
-  ,OP("Buzzer", showEvent, enterEvent)
+  ,OP("Buzzer", showEvent, enterEvent)  
+  ,SUBMENU(page2SubMenu)
 );
 
 NAVROOT(nav,mainMenu,MAX_DEPTH,serial,out);
