@@ -8,6 +8,7 @@
 #include "Buzzer.h"
 #include "DigitalIO.h"
 #include "DACTest.h"
+#include "PWMSquare.h"
 
 
 

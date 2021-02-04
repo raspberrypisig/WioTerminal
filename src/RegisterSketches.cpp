@@ -10,4 +10,6 @@ RegisterSketches::RegisterSketches() {
    Register("Buzzer",             new Buzzer());
    Register("DigitalIO",          new DigitalIO());
    Register("DACTest",            new DACTest());
+   Register("PWMSquare",          new PWMSquare());
+   
 }

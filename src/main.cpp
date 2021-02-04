@@ -74,6 +74,7 @@ MENU(wifiSubMenu,"Wifi",doNothing,noEvent,noStyle
 MENU(ioSubMenu, "IO", doNothing,noEvent,noStyle
    ,OP("DigitalIO", showEvent, enterEvent)
    ,OP("DACTest", showEvent, enterEvent)
+   ,OP("PWMSquare", showEvent, enterEvent)
   ,EXIT(BACKMENU)
 );
 
