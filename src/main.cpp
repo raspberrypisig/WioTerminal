@@ -79,7 +79,8 @@ MENU(ioSubMenu, "IO", doNothing,noEvent,noStyle
 );
 
 MENU(page2SubMenu, "----Page 2----", doNothing,noEvent,noStyle
-  ,SUBMENU(ioSubMenu) 
+  ,SUBMENU(ioSubMenu)
+  ,OP("FunctionGen", showEvent, enterEvent)
   ,EXIT(BACKMENU)
 );
 

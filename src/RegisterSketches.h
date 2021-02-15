@@ -9,6 +9,7 @@
 #include "DigitalIO.h"
 #include "DACTest.h"
 #include "PWMSquare.h"
+#include "FunctionGenerator.h"
 
 
 
