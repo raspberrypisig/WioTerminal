@@ -12,7 +12,7 @@ class FunctionGenerator : public ArduinoSketchBase {
     private: 
       TFT_eSPI tft;
       Adafruit_ZeroDMA myDMA;
-      Adafruit_ZeroTimer zerotimer;
+      Adafruit_ZeroTimer  zerotimer = Adafruit_ZeroTimer(3);
       uint16_t sinewave_lookup[100];
 
       void FillSineWaveLookup();

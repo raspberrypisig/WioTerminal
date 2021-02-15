@@ -4,8 +4,6 @@
 
 FunctionGenerator::FunctionGenerator() {
     tft = TFT_eSPI(320,240);
-
-    
 }
 
 void FunctionGenerator::Run() {
@@ -65,7 +63,7 @@ void FunctionGenerator::FillSineWaveLookup() {
 
 
 void FunctionGenerator::Timer3Init() {
-    zerotimer = Adafruit_ZeroTimer(3);
+   
 
 /*
   uint16_t divider  = 1;
@@ -123,7 +121,7 @@ void FunctionGenerator::Timer3Init() {
           );
 
     zerotimer.setCompare(0, compare);
-    zerotimer.setCallback(false, TC_CALLBACK_CC_CHANNEL0, NULL);
+    //zerotimer.setCallback(false, TC_CALLBACK_CC_CHANNEL0, NULL);
     zerotimer.enable(true);
 
 }
