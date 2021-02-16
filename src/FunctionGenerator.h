@@ -8,6 +8,8 @@
 #include <Adafruit_ZeroDMA.h>
 #include "Adafruit_ZeroTimer.h"
 
+enum class Waveform {SQUARE, SINE, RAMP, TRIANGLE};
+
 class FunctionGenerator : public ArduinoSketchBase {
     private: 
       TFT_eSPI tft;
@@ -15,8 +17,16 @@ class FunctionGenerator : public ArduinoSketchBase {
       Adafruit_ZeroTimer  zerotimer = Adafruit_ZeroTimer(3);
       uint16_t sinewave_lookup[100];
 
+      
       void FillSineWaveLookup();
       void Timer3Init();
+
+      Waveform HomeScreen_nextFunction(Waveform w);
+      void HomeScreen_redraw(Waveform current, Waveform next);
+      void HomeScreen_drawSquare(bool fill);
+      void HomeScreen_drawSine(bool fill);
+      void HomeScreen_drawRamp(bool fill);
+      void HomeScreen_drawTriangle(bool fill);
 
     protected:
       void Setup() override;

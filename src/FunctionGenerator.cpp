@@ -4,6 +4,7 @@
 
 FunctionGenerator::FunctionGenerator() {
     tft = TFT_eSPI(320,240);
+    
 }
 
 void FunctionGenerator::Run() {
@@ -11,14 +12,20 @@ void FunctionGenerator::Run() {
 }
 
 void FunctionGenerator::Setup() {
-    Serial.begin(115200);
+  Serial.begin(115200);
 
-    tft.fillScreen(TFT_BLUE);
+  tft.fillScreen(TFT_BLUE);
 
-    tft.setTextDatum(MC_DATUM);
-    tft.setTextColor(TFT_RED);
-    tft.setFreeFont(FF18);
-    tft.drawString("FunctionGen", 160, 20);
+  tft.setTextDatum(MC_DATUM);
+  tft.setTextColor(TFT_RED);
+  tft.setFreeFont(FF18);
+  tft.drawString("FunctionGen", 160, 20);
+  tft.setTextDatum(TL_DATUM);
+
+  HomeScreen_drawSquare(true);
+  HomeScreen_drawSine(false);
+  HomeScreen_drawRamp(false);
+  HomeScreen_drawTriangle(false);
 
 	analogWriteResolution(12);
 	analogWrite(DAC0,0);   // DAC init setup DAC pin and zero it
@@ -124,4 +131,98 @@ void FunctionGenerator::Timer3Init() {
     //zerotimer.setCallback(false, TC_CALLBACK_CC_CHANNEL0, NULL);
     zerotimer.enable(true);
 
+}
+
+Waveform FunctionGenerator::HomeScreen_nextFunction(Waveform w) {
+  switch(w) {
+    case Waveform::SQUARE:
+      return Waveform::SINE;
+      break;
+    case Waveform::SINE:
+      return Waveform::RAMP;
+      break;
+    case Waveform::RAMP:
+      return Waveform::TRIANGLE;
+      break;
+    case Waveform::TRIANGLE:
+      return Waveform::SQUARE;
+      break;                
+  }
+
+  return Waveform::SQUARE;
+}
+
+void FunctionGenerator::HomeScreen_redraw(Waveform current, Waveform next) {
+    tft.setTextDatum(TL_DATUM);
+}
+
+void FunctionGenerator::HomeScreen_drawSquare(bool fill) {
+ tft.setTextDatum(TL_DATUM);
+
+
+  if (fill) {
+    tft.fillRoundRect(30,80, 120,60,5, TFT_GREEN);
+     tft.setTextColor(TFT_PURPLE);
+  }
+
+  else {
+    tft.fillRoundRect(30,80,120,60,5, TFT_BLACK);
+    tft.setTextColor(TFT_WHITE);
+  }
+  tft.setTextDatum(MC_DATUM);
+
+  tft.drawString("SQUARE", 90, 110);
+}
+
+void FunctionGenerator::HomeScreen_drawSine(bool fill) {
+ tft.setTextDatum(TL_DATUM);
+
+
+  if (fill) {
+    tft.fillRoundRect(170,80, 120,60,5, TFT_GREEN);
+     tft.setTextColor(TFT_PURPLE);
+  }
+
+  else {
+    tft.fillRoundRect(170,80,120,60,5, TFT_BLACK);
+     tft.setTextColor(TFT_WHITE);
+  }
+  tft.setTextDatum(MC_DATUM);
+
+  tft.drawString("SINE", 230, 110);
+}
+
+void FunctionGenerator::HomeScreen_drawRamp(bool fill) {
+ tft.setTextDatum(TL_DATUM);
+
+  if (fill) {
+    tft.fillRoundRect(30,160, 120,60,5, TFT_GREEN);
+    tft.setTextColor(TFT_PURPLE);
+  }
+
+  else {
+    tft.fillRoundRect(30,160,120,60,5, TFT_BLACK);
+    tft.setTextColor(TFT_WHITE);
+  }
+  tft.setTextDatum(MC_DATUM);
+
+  tft.drawString("RAMP", 90, 190);
+}
+
+void FunctionGenerator::HomeScreen_drawTriangle(bool fill) {
+ tft.setTextDatum(TL_DATUM);
+
+
+  if (fill) {
+    tft.fillRoundRect(170,160, 120,60,5, TFT_GREEN);
+    tft.setTextColor(TFT_PURPLE);
+  }
+
+  else {
+    tft.fillRoundRect(170,160,120,60,5, TFT_BLACK);
+    tft.setTextColor(TFT_WHITE);
+  }
+  tft.setTextDatum(MC_DATUM);
+
+  tft.drawString("TRI", 230, 190);
 }
