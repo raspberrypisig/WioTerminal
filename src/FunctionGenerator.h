@@ -28,6 +28,7 @@ class FunctionGenerator : public ArduinoSketchBase {
 
       Waveform HomeScreen_nextWaveform();
       void HomeScreen_redraw(Waveform current, Waveform next);
+      void HomeScreen_draw();
       void HomeScreen_drawSquare(bool fill);
       void HomeScreen_drawSine(bool fill);
       void HomeScreen_drawRamp(bool fill);

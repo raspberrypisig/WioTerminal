@@ -20,18 +20,7 @@ void FunctionGenerator::Setup() {
   pinMode(WIO_5S_RIGHT, INPUT_PULLUP);
   pinMode(WIO_5S_PRESS, INPUT_PULLUP);
 
-  tft.fillScreen(TFT_BLUE);
-
-  tft.setTextDatum(MC_DATUM);
-  tft.setTextColor(TFT_RED);
-  tft.setFreeFont(FF18);
-  tft.drawString("FunctionGen", 160, 20);
-  tft.setTextDatum(TL_DATUM);
-
-  HomeScreen_drawSquare(true);
-  HomeScreen_drawSine(false);
-  HomeScreen_drawRamp(false);
-  HomeScreen_drawTriangle(false);
+  HomeScreen_draw();
 
 	analogWriteResolution(12);
 	analogWrite(DAC0,0);   // DAC init setup DAC pin and zero it
@@ -78,6 +67,11 @@ void FunctionGenerator::Loop() {
       state = FunctionGeneratorProgramState::RUNNING;
       RunningScreen();
     }  
+  }
+
+  else if (state == FunctionGeneratorProgramState::RUNNING &&  digitalRead(WIO_5S_PRESS) == LOW) {
+    state = FunctionGeneratorProgramState::HOMESCREEN;
+    HomeScreen_draw();
   }
 
   delay(200);
@@ -328,3 +322,17 @@ void FunctionGenerator::RunningScreen() {
         }
 }
 
+void FunctionGenerator::HomeScreen_draw() {
+  tft.fillScreen(TFT_BLUE);
+
+  tft.setTextDatum(MC_DATUM);
+  tft.setTextColor(TFT_RED);
+  tft.setFreeFont(FF18);
+  tft.drawString("FunctionGen", 160, 20);
+  tft.setTextDatum(TL_DATUM);
+
+  HomeScreen_drawSquare(true);
+  HomeScreen_drawSine(false);
+  HomeScreen_drawRamp(false);
+  HomeScreen_drawTriangle(false);
+}
