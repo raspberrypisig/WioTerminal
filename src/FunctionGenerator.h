@@ -8,7 +8,9 @@
 #include <Adafruit_ZeroDMA.h>
 #include "Adafruit_ZeroTimer.h"
 
-enum class Waveform {SQUARE, SINE, RAMP, TRIANGLE};
+enum class Waveform {SQUARE=0, SINE=1, RAMP=2, TRIANGLE=3};
+
+enum class FunctionGeneratorProgramState {HOMESCREEN, CONFIGURE_FREQUENCY, CONFIGURE_DUTY, RUNNING};
 
 class FunctionGenerator : public ArduinoSketchBase {
     private: 
@@ -16,7 +18,9 @@ class FunctionGenerator : public ArduinoSketchBase {
       Adafruit_ZeroDMA myDMA;
       Adafruit_ZeroTimer  zerotimer = Adafruit_ZeroTimer(3);
       uint16_t sinewave_lookup[100];
-      Waveform current_waveform = Waveform::SQUARE;
+      Waveform homescreen_waveform = Waveform::SQUARE;
+      FunctionGeneratorProgramState state = FunctionGeneratorProgramState::HOMESCREEN;
+      String waveform_names[4] = {"SQUARE", "SINE", "RAMP", "TRIANGLE"};
 
       
       void FillSineWaveLookup();
@@ -28,6 +32,9 @@ class FunctionGenerator : public ArduinoSketchBase {
       void HomeScreen_drawSine(bool fill);
       void HomeScreen_drawRamp(bool fill);
       void HomeScreen_drawTriangle(bool fill);
+      void ConfigureFrequencyScreen();
+      void ConfigureDutyScreen();
+      void RunningScreen();
 
     protected:
       void Setup() override;

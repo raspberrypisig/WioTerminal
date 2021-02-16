@@ -63,14 +63,21 @@ void FunctionGenerator::Setup() {
 }
 
 void FunctionGenerator::Loop() {
-  if (digitalRead(WIO_5S_RIGHT) == LOW) {
-     Waveform next_waveform = HomeScreen_nextWaveform();
-     HomeScreen_redraw(current_waveform, next_waveform);
-     current_waveform = next_waveform;
+  if (state == FunctionGeneratorProgramState::HOMESCREEN && digitalRead(WIO_5S_RIGHT) == LOW) {
+    Waveform next_waveform = HomeScreen_nextWaveform();
+    HomeScreen_redraw(homescreen_waveform, next_waveform);
+    homescreen_waveform = next_waveform;
   }
 
-  else if (digitalRead(WIO_5S_PRESS) == LOW) {
-
+  else if (state == FunctionGeneratorProgramState::HOMESCREEN &&  digitalRead(WIO_5S_PRESS) == LOW) {
+    if (homescreen_waveform == Waveform::SQUARE) {
+      state = FunctionGeneratorProgramState::CONFIGURE_FREQUENCY;
+      ConfigureFrequencyScreen();
+    }
+    else {
+      state = FunctionGeneratorProgramState::RUNNING;
+      RunningScreen();
+    }  
   }
 
   delay(200);
@@ -150,7 +157,7 @@ void FunctionGenerator::Timer3Init() {
 }
 
 Waveform FunctionGenerator::HomeScreen_nextWaveform() {
-  switch(current_waveform) {
+  switch(homescreen_waveform) {
     case Waveform::SQUARE:
       return Waveform::SINE;
       break;
@@ -277,3 +284,47 @@ void FunctionGenerator::HomeScreen_drawTriangle(bool fill) {
 
   tft.drawString("TRI", 230, 190);
 }
+
+void FunctionGenerator::ConfigureFrequencyScreen() {
+
+}
+
+void FunctionGenerator::ConfigureDutyScreen() {
+
+} 
+
+void FunctionGenerator::RunningScreen() {
+        tft.setTextDatum(MC_DATUM);
+        tft.fillScreen(TFT_RED);
+        tft.setFreeFont(FF17);
+        tft.setTextColor(tft.color565(224,225,232));
+        tft.drawString("Function Generator", 160, 20);
+        tft.fillRoundRect(10, 45, 300, 55, 5, tft.color565(255, 194, 179));
+        tft.fillRoundRect(10, 105, 300, 55, 5, tft.color565(255, 194, 179));
+        if (homescreen_waveform == Waveform::SQUARE) {
+          tft.fillRoundRect(10, 165, 300, 55, 5, tft.color565(255, 194, 179));
+        }
+        
+        
+        tft.setFreeFont(FM9);
+        tft.setTextColor(TFT_BLACK);
+        tft.drawString("Waveform", 160, 50);
+        tft.drawString("Frequency(Hz)", 160, 110);
+        if (homescreen_waveform == Waveform::SQUARE) {
+        tft.drawString("Duty Cycle(%)", 160, 170);
+        }
+
+
+        tft.setFreeFont(FMB12);
+        tft.setTextColor(TFT_BLACK);
+        tft.drawString(waveform_names[(int)homescreen_waveform], 160, 72);
+        //tft.setTextColor(tft.color565(224,225,232));
+        tft.setCursor(35, 140);
+        //displayMacAddress(mac);
+        tft.drawNumber(1000, 160, 132);
+        if (homescreen_waveform == Waveform::SQUARE) {
+        tft.setTextColor(TFT_BLUE);
+        tft.drawString("moo", 160, 192); 
+        }
+}
+
