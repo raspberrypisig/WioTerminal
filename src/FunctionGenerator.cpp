@@ -14,6 +14,12 @@ void FunctionGenerator::Run() {
 void FunctionGenerator::Setup() {
   Serial.begin(115200);
 
+  pinMode(WIO_5S_UP, INPUT_PULLUP);
+  pinMode(WIO_5S_DOWN, INPUT_PULLUP);
+  pinMode(WIO_5S_LEFT, INPUT_PULLUP);
+  pinMode(WIO_5S_RIGHT, INPUT_PULLUP);
+  pinMode(WIO_5S_PRESS, INPUT_PULLUP);
+
   tft.fillScreen(TFT_BLUE);
 
   tft.setTextDatum(MC_DATUM);
@@ -57,7 +63,17 @@ void FunctionGenerator::Setup() {
 }
 
 void FunctionGenerator::Loop() {
+  if (digitalRead(WIO_5S_RIGHT) == LOW) {
+     Waveform next_waveform = HomeScreen_nextWaveform();
+     HomeScreen_redraw(current_waveform, next_waveform);
+     current_waveform = next_waveform;
+  }
 
+  else if (digitalRead(WIO_5S_PRESS) == LOW) {
+
+  }
+
+  delay(200);
 }
 
 void FunctionGenerator::FillSineWaveLookup() {
@@ -133,8 +149,8 @@ void FunctionGenerator::Timer3Init() {
 
 }
 
-Waveform FunctionGenerator::HomeScreen_nextFunction(Waveform w) {
-  switch(w) {
+Waveform FunctionGenerator::HomeScreen_nextWaveform() {
+  switch(current_waveform) {
     case Waveform::SQUARE:
       return Waveform::SINE;
       break;
@@ -153,7 +169,42 @@ Waveform FunctionGenerator::HomeScreen_nextFunction(Waveform w) {
 }
 
 void FunctionGenerator::HomeScreen_redraw(Waveform current, Waveform next) {
-    tft.setTextDatum(TL_DATUM);
+    switch(current) {
+      case Waveform::SQUARE:
+        HomeScreen_drawSquare(false);
+      break;
+
+      case Waveform::SINE:
+        HomeScreen_drawSine(false);
+      break;
+
+      case Waveform::RAMP:
+        HomeScreen_drawRamp(false);
+      break;
+
+      case Waveform::TRIANGLE:
+        HomeScreen_drawTriangle(false);
+      break;            
+
+    }
+
+    switch(next) {
+      case Waveform::SQUARE:
+        HomeScreen_drawSquare(true);
+      break;
+
+      case Waveform::SINE:
+        HomeScreen_drawSine(true);
+      break;
+
+      case Waveform::RAMP:
+        HomeScreen_drawRamp(true);
+      break;
+
+      case Waveform::TRIANGLE:
+        HomeScreen_drawTriangle(true);
+      break;          
+    }
 }
 
 void FunctionGenerator::HomeScreen_drawSquare(bool fill) {

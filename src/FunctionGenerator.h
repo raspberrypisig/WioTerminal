@@ -16,12 +16,13 @@ class FunctionGenerator : public ArduinoSketchBase {
       Adafruit_ZeroDMA myDMA;
       Adafruit_ZeroTimer  zerotimer = Adafruit_ZeroTimer(3);
       uint16_t sinewave_lookup[100];
+      Waveform current_waveform = Waveform::SQUARE;
 
       
       void FillSineWaveLookup();
       void Timer3Init();
 
-      Waveform HomeScreen_nextFunction(Waveform w);
+      Waveform HomeScreen_nextWaveform();
       void HomeScreen_redraw(Waveform current, Waveform next);
       void HomeScreen_drawSquare(bool fill);
       void HomeScreen_drawSine(bool fill);
