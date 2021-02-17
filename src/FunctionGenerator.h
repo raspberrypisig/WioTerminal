@@ -24,7 +24,7 @@ class FunctionGenerator : public ArduinoSketchBase {
       Waveform homescreen_waveform = Waveform::SQUARE;
       FunctionGeneratorProgramState state = FunctionGeneratorProgramState::HOMESCREEN;
       String waveform_names[4] = {"SQUARE", "SINE", "RAMP", "TRIANGLE"};
-      uint8_t squarewave_frequency[8];
+      uint8_t squarewave_frequency[8] = {0,0,0,0,0,0,0,0};
       uint8_t squarewave_digitoffset[8] = {9,8,7,5,4,3,1,0};
       uint8_t squarewave_currentpos = 7;
       uint8_t squarewave_dutycycle = 50;
