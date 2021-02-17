@@ -8,6 +8,9 @@
 #include <Adafruit_ZeroDMA.h>
 #include "Adafruit_ZeroTimer.h"
 
+#define CONFIGURE_FREQUENCY_WIDTH 30
+#define CONFIGURE_FREQUENCY_SPACING 25
+
 enum class Waveform {SQUARE=0, SINE=1, RAMP=2, TRIANGLE=3};
 
 enum class FunctionGeneratorProgramState {HOMESCREEN, CONFIGURE_FREQUENCY, CONFIGURE_DUTY, RUNNING};

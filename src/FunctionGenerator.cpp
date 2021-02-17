@@ -69,12 +69,22 @@ void FunctionGenerator::Loop() {
     }  
   }
 
+  else if (state == FunctionGeneratorProgramState::CONFIGURE_FREQUENCY &&  digitalRead(WIO_5S_PRESS) == LOW) {
+    state = FunctionGeneratorProgramState::CONFIGURE_DUTY;
+    ConfigureDutyScreen();
+  }
+
+  else if (state == FunctionGeneratorProgramState::CONFIGURE_DUTY &&  digitalRead(WIO_5S_PRESS) == LOW) {
+    state = FunctionGeneratorProgramState::RUNNING;
+    RunningScreen();
+  }
+
   else if (state == FunctionGeneratorProgramState::RUNNING &&  digitalRead(WIO_5S_PRESS) == LOW) {
     state = FunctionGeneratorProgramState::HOMESCREEN;
     HomeScreen_draw();
   }
 
-  delay(200);
+  delay(100);
 }
 
 void FunctionGenerator::FillSineWaveLookup() {
@@ -281,10 +291,36 @@ void FunctionGenerator::HomeScreen_drawTriangle(bool fill) {
 
 void FunctionGenerator::ConfigureFrequencyScreen() {
 
+        tft.setTextDatum(MC_DATUM);
+        tft.fillScreen(TFT_RED);
+        tft.setFreeFont(FF17);
+        tft.setTextColor(tft.color565(224,225,232));
+        tft.drawString("Function Generator", 160, 20);
+        tft.setTextColor(TFT_WHITE);
+        tft.drawString("SET FREQUENCY(Hz)", 160, 60);
+
+        tft.setFreeFont(FF44);
+        
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING,130);
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 1*CONFIGURE_FREQUENCY_WIDTH,130);
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 3*CONFIGURE_FREQUENCY_WIDTH,130);
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 4*CONFIGURE_FREQUENCY_WIDTH,130);
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 5*CONFIGURE_FREQUENCY_WIDTH,130);
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 7*CONFIGURE_FREQUENCY_WIDTH,130);
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 8*CONFIGURE_FREQUENCY_WIDTH,130);
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 9*CONFIGURE_FREQUENCY_WIDTH,130);
+        
+        tft.setFreeFont(FF17);        
+        tft.drawRect(10, 100, 32,60,TFT_YELLOW );
 }
 
 void FunctionGenerator::ConfigureDutyScreen() {
-
+        tft.setTextDatum(MC_DATUM);
+        tft.fillScreen(TFT_RED);
+        tft.setFreeFont(FF17);
+        tft.setTextColor(tft.color565(224,225,232));
+        tft.drawString("Function Generator", 160, 20);
+        tft.drawString("SET DUTY CYCLE(%)", 160, 60);
 } 
 
 void FunctionGenerator::RunningScreen() {
