@@ -114,6 +114,39 @@ void FunctionGenerator::Loop() {
     RunningScreen();
   }
 
+  else if (state == FunctionGeneratorProgramState::CONFIGURE_DUTY &&  digitalRead(WIO_5S_UP) == LOW) {
+    if (squarewave_dutycycle + 10 <= 100) {
+        squarewave_dutycycle += 10;
+        DutyScreen_redraw();
+
+    }
+
+  }
+
+  else if (state == FunctionGeneratorProgramState::CONFIGURE_DUTY &&  digitalRead(WIO_5S_DOWN) == LOW) {
+    if (squarewave_dutycycle - 10 >= 0) {
+        squarewave_dutycycle -= 10;
+        DutyScreen_redraw();
+
+    }
+  }
+
+  else if (state == FunctionGeneratorProgramState::CONFIGURE_DUTY &&  digitalRead(WIO_5S_LEFT) == LOW) {
+    if (squarewave_dutycycle - 1 >= 0) {
+        squarewave_dutycycle -= 1;
+        DutyScreen_redraw();
+
+    }
+  }
+
+  else if (state == FunctionGeneratorProgramState::CONFIGURE_DUTY &&  digitalRead(WIO_5S_RIGHT) == LOW) {
+    if (squarewave_dutycycle + 1 <= 100) {
+        squarewave_dutycycle += 1;
+        DutyScreen_redraw();
+
+    }
+  }
+
   else if (state == FunctionGeneratorProgramState::RUNNING &&  digitalRead(WIO_5S_PRESS) == LOW) {
     state = FunctionGeneratorProgramState::HOMESCREEN;
     HomeScreen_draw();
@@ -345,17 +378,22 @@ void FunctionGenerator::ConfigureFrequencyScreen() {
         tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 8*CONFIGURE_FREQUENCY_WIDTH,130);
         tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 9*CONFIGURE_FREQUENCY_WIDTH,130);
         
+        for (int i=0; i<8; i++ ) {
+          squarewave_frequency[i] = 0;
+        }
+
         tft.setFreeFont(FF17);        
         tft.drawRect(10, 100, 32,60,TFT_YELLOW );
 }
 
 void FunctionGenerator::ConfigureDutyScreen() {
-        tft.setTextDatum(MC_DATUM);
+          tft.setTextDatum(MC_DATUM);
         tft.fillScreen(TFT_RED);
         tft.setFreeFont(FF17);
         tft.setTextColor(tft.color565(224,225,232));
         tft.drawString("Function Generator", 160, 20);
         tft.drawString("SET DUTY CYCLE(%)", 160, 60);
+  DutyScreen_redraw();
 } 
 
 void FunctionGenerator::RunningScreen() {
@@ -381,15 +419,22 @@ void FunctionGenerator::RunningScreen() {
 
 
         tft.setFreeFont(FMB12);
-        tft.setTextColor(TFT_BLACK);
+        tft.setTextColor(TFT_BLUE);
         tft.drawString(waveform_names[(int)homescreen_waveform], 160, 72);
         //tft.setTextColor(tft.color565(224,225,232));
         tft.setCursor(35, 140);
         //displayMacAddress(mac);
-        tft.drawNumber(1000, 160, 132);
+
+        long freq = 0L;
+        
+        for (int i=0; i<8; i++) {
+           freq += powl(10, i) * squarewave_frequency[i] ;
+        }
+         
+        tft.drawNumber(freq, 160, 132);
         if (homescreen_waveform == Waveform::SQUARE) {
-        tft.setTextColor(TFT_BLUE);
-        tft.drawString("moo", 160, 192); 
+        
+        tft.drawNumber(squarewave_dutycycle, 160, 192); 
         }
 }
 
@@ -432,5 +477,7 @@ void FunctionGenerator::FrequencyScreen_redraw() {
 }
 
 void FunctionGenerator::DutyScreen_redraw() {
-  
+        tft.fillRect(0,100,240,120, TFT_RED);
+        tft.setFreeFont(FF44);
+        tft.drawNumber(squarewave_dutycycle, 160,130);
 }

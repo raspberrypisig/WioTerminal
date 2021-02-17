@@ -29,6 +29,7 @@ class FunctionGenerator : public ArduinoSketchBase {
       uint8_t squarewave_currentpos = 7;
       uint8_t squarewave_dutycycle = 50;
       
+      
       void FillSineWaveLookup();
       void Timer3Init();
 
