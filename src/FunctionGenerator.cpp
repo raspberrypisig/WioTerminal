@@ -74,6 +74,32 @@ void FunctionGenerator::Loop() {
     ConfigureDutyScreen();
   }
 
+  else if (state == FunctionGeneratorProgramState::CONFIGURE_FREQUENCY &&  digitalRead(WIO_5S_UP) == LOW) {
+    
+  } 
+
+  else if (state == FunctionGeneratorProgramState::CONFIGURE_FREQUENCY &&  digitalRead(WIO_5S_DOWN) == LOW) {
+    
+  }  
+
+  else if (state == FunctionGeneratorProgramState::CONFIGURE_FREQUENCY &&  digitalRead(WIO_5S_LEFT) == LOW) {
+    if (squarewave_currentpos < 7) {
+      squarewave_currentpos++;
+      FrequencyScreen_redraw();
+    }    
+  } 
+
+  else if (state == FunctionGeneratorProgramState::CONFIGURE_FREQUENCY &&  digitalRead(WIO_5S_RIGHT) == LOW) {
+
+    if (squarewave_currentpos >= 1) {
+      squarewave_currentpos--;
+      FrequencyScreen_redraw();
+    }
+    Serial.print("pos:");
+    Serial.println(squarewave_currentpos);
+
+  } 
+
   else if (state == FunctionGeneratorProgramState::CONFIGURE_DUTY &&  digitalRead(WIO_5S_PRESS) == LOW) {
     state = FunctionGeneratorProgramState::RUNNING;
     RunningScreen();
@@ -371,4 +397,30 @@ void FunctionGenerator::HomeScreen_draw() {
   HomeScreen_drawSine(false);
   HomeScreen_drawRamp(false);
   HomeScreen_drawTriangle(false);
+}
+
+void FunctionGenerator::FrequencyScreen_redraw() {
+        tft.setFreeFont(FF44);
+        
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING,130);
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 1*CONFIGURE_FREQUENCY_WIDTH,130);
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 3*CONFIGURE_FREQUENCY_WIDTH,130);
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 4*CONFIGURE_FREQUENCY_WIDTH,130);
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 5*CONFIGURE_FREQUENCY_WIDTH,130);
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 7*CONFIGURE_FREQUENCY_WIDTH,130);
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 8*CONFIGURE_FREQUENCY_WIDTH,130);
+        tft.drawNumber(0,CONFIGURE_FREQUENCY_SPACING + 9*CONFIGURE_FREQUENCY_WIDTH,130);
+        
+        tft.setFreeFont(FF17);  
+        for (int i=0; i<=9; i++) {
+          tft.drawRect(10+CONFIGURE_FREQUENCY_WIDTH * i, 100, 32,60,TFT_RED );
+        }      
+
+        Serial.print("left:");
+        Serial.println(10+CONFIGURE_FREQUENCY_WIDTH*squarewave_digitoffset[squarewave_currentpos]);
+        tft.drawRect(10+CONFIGURE_FREQUENCY_WIDTH*squarewave_digitoffset[squarewave_currentpos], 100, 32,60,TFT_YELLOW );
+}
+
+void FunctionGenerator::DutyScreen_redraw() {
+  
 }
