@@ -1,7 +1,5 @@
 #include "FunctionGenerator.h"
 
-
-
 FunctionGenerator::FunctionGenerator() {
     tft = TFT_eSPI(320,240);
     
@@ -25,7 +23,10 @@ void FunctionGenerator::Setup() {
 	analogWriteResolution(12);
 	analogWrite(DAC0,0);   // DAC init setup DAC pin and zero it
 
-    FillSineWaveLookup();
+  FillSineWaveLookup();
+  FillTriangleLookup();
+  FillRampLookup();
+  //GenerateSquareWave();
     
     //while (DAC->SYNCBUSY.bit.DATA0);
     //DAC->DATA[0].reg = 123;
@@ -159,10 +160,25 @@ void FunctionGenerator::FillSineWaveLookup() {
   float phase = TWO_PI/NUMBER_OF_DATA_POINTS;
 
   for (int i=0; i<NUMBER_OF_DATA_POINTS; i++) {
-     sinewave_lookup[i] =  4000 * sin(phase * i) + 4096/2;
+     sinewave_lookup[i] =  2000 * sin(phase * i) + 4096/2;
   }
 }
 
+void FunctionGenerator::FillTriangleLookup() {
+  for (int i=0; i<NUMBEROFPOINTS; i++) {
+    triangle_lookup[i] = (uint16_t) ( 4096/2 + 2000 * fabsf(roundf(1.f * i /NUMBEROFPOINTS) - (1.f * i /NUMBEROFPOINTS)));
+  }
+}
+
+void FunctionGenerator::FillRampLookup() {
+  for (int i=0; i<NUMBEROFPOINTS; i++) {
+    ramp_lookup[i] = i * 3000/(1.f * (NUMBEROFPOINTS - 1));
+  }
+}
+
+void FunctionGenerator::GenerateSquareWave() {
+
+}
 
 void FunctionGenerator::Timer3Init() {
    

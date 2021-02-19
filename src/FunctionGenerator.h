@@ -11,6 +11,8 @@
 #define CONFIGURE_FREQUENCY_WIDTH 30
 #define CONFIGURE_FREQUENCY_SPACING 25
 
+#define NUMBEROFPOINTS 100
+
 enum class Waveform {SQUARE=0, SINE=1, RAMP=2, TRIANGLE=3};
 
 enum class FunctionGeneratorProgramState {HOMESCREEN, CONFIGURE_FREQUENCY, CONFIGURE_DUTY, RUNNING};
@@ -20,7 +22,9 @@ class FunctionGenerator : public ArduinoSketchBase {
       TFT_eSPI tft;
       Adafruit_ZeroDMA myDMA;
       Adafruit_ZeroTimer  zerotimer = Adafruit_ZeroTimer(3);
-      uint16_t sinewave_lookup[100];
+      uint16_t sinewave_lookup[NUMBEROFPOINTS];
+      uint16_t triangle_lookup[NUMBEROFPOINTS];
+      uint16_t ramp_lookup[NUMBEROFPOINTS];
       Waveform homescreen_waveform = Waveform::SQUARE;
       FunctionGeneratorProgramState state = FunctionGeneratorProgramState::HOMESCREEN;
       String waveform_names[4] = {"SQUARE", "SINE", "RAMP", "TRIANGLE"};
@@ -29,8 +33,10 @@ class FunctionGenerator : public ArduinoSketchBase {
       uint8_t squarewave_currentpos = 7;
       uint8_t squarewave_dutycycle = 50;
       
-      
       void FillSineWaveLookup();
+      void FillTriangleLookup();
+      void FillRampLookup();
+      void GenerateSquareWave();
       void Timer3Init();
 
       Waveform HomeScreen_nextWaveform();
