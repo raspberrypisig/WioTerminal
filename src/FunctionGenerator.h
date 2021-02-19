@@ -21,6 +21,7 @@ class FunctionGenerator : public ArduinoSketchBase {
     private: 
       TFT_eSPI tft;
       Adafruit_ZeroDMA myDMA;
+      DmacDescriptor *descriptor;
       Adafruit_ZeroTimer  zerotimer = Adafruit_ZeroTimer(3);
       uint16_t sinewave_lookup[NUMBEROFPOINTS];
       uint16_t triangle_lookup[NUMBEROFPOINTS];
@@ -33,10 +34,15 @@ class FunctionGenerator : public ArduinoSketchBase {
       uint8_t squarewave_currentpos = 7;
       uint8_t squarewave_dutycycle = 50;
       
+      void SetupDMA();
+
       void FillSineWaveLookup();
       void FillTriangleLookup();
       void FillRampLookup();
-      void GenerateSquareWave();
+      void StartSquareWaveform(long freq, uint8_t duty);
+      void StartSineWaveform();
+      void StartRampWaveform();
+      void StartTriangleWaveform();
       void Timer3Init();
 
       Waveform HomeScreen_nextWaveform();

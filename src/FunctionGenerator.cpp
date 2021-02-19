@@ -26,29 +26,13 @@ void FunctionGenerator::Setup() {
   FillSineWaveLookup();
   FillTriangleLookup();
   FillRampLookup();
-  //GenerateSquareWave();
-    
+
+  //SetupDMA();
+
     //while (DAC->SYNCBUSY.bit.DATA0);
     //DAC->DATA[0].reg = 123;
 
-    /*
 
-    myDMA.setTrigger(TC3_DMAC_ID_OVF);
-    myDMA.setAction(DMA_TRIGGER_ACTON_BEAT);
-    myDMA.allocate();
-
-    myDMA.addDescriptor(
-    sinewave_lookup,                    // move data from here
-    (void *)(&DAC->DATA[0].reg), // to here (M4)
-
-    NUMBER_OF_DATA_POINTS,                      // this many...
-    DMA_BEAT_SIZE_HWORD,               // bytes/hword/words
-    true,                             // increment source addr?
-    false);                           // increment dest addr?
-
-    myDMA.startJob();
-   
-    */
   
 }
 
@@ -174,10 +158,6 @@ void FunctionGenerator::FillRampLookup() {
   for (int i=0; i<NUMBEROFPOINTS; i++) {
     ramp_lookup[i] = i * 3000/(1.f * (NUMBEROFPOINTS - 1));
   }
-}
-
-void FunctionGenerator::GenerateSquareWave() {
-
 }
 
 void FunctionGenerator::Timer3Init() {
@@ -442,15 +422,21 @@ void FunctionGenerator::RunningScreen() {
         //displayMacAddress(mac);
 
         long freq = 0L;
-        
-        for (int i=0; i<8; i++) {
+
+        if (homescreen_waveform == Waveform::SQUARE) {
+          for (int i=0; i<8; i++) {
            freq += powl(10, i) * squarewave_frequency[i] ;
+          }
+        }
+
+        else {
+           freq = 1000L;
         }
          
         tft.drawNumber(freq, 160, 132);
         if (homescreen_waveform == Waveform::SQUARE) {
-        
-        tft.drawNumber(squarewave_dutycycle, 160, 192); 
+          tft.drawNumber(squarewave_dutycycle, 160, 192); 
+          //StartSquareWaveform(freq, squarewave_dutycycle);
         }
 }
 
@@ -496,4 +482,53 @@ void FunctionGenerator::DutyScreen_redraw() {
         tft.fillRect(0,100,240,120, TFT_RED);
         tft.setFreeFont(FF44);
         tft.drawNumber(squarewave_dutycycle, 160,130);
+}
+
+void FunctionGenerator::SetupDMA() {
+    myDMA.setTrigger(TC3_DMAC_ID_OVF);
+    myDMA.setAction(DMA_TRIGGER_ACTON_BEAT);
+    myDMA.loop(true);
+    myDMA.allocate();
+
+    descriptor = myDMA.addDescriptor(
+    NULL,                    // set that later, once waveform type is selected.
+    (void *)(&DAC->DATA[0].reg), // to here (M4)
+    NUMBER_OF_DATA_POINTS,                      // this many...
+    DMA_BEAT_SIZE_HWORD,               // bytes/hword/words
+    true,                             // increment source addr?
+    false);                           // increment dest addr?
+
+    //myDMA.startJob();
+   
+    
+}
+
+
+void FunctionGenerator::StartSquareWaveform(long freq, uint8_t duty) {
+    tc_clock_prescaler  prescaler = TC_CLOCK_PRESCALER_DIV1;
+    uint16_t compare = 48000000/freq;
+
+    zerotimer.enable(false);
+    zerotimer.configure(prescaler,       // prescaler
+          TC_COUNTER_SIZE_16BIT,       // bit width of timer/counter
+          TC_WAVE_GENERATION_MATCH_PWM // frequency or PWM mode
+          );
+
+    //zerotimer.setCompare(0, compare);
+    zerotimer.setPeriodMatch(compare,compare * duty/100,0);
+    //zerotimer.setCallback(false, TC_CALLBACK_CC_CHANNEL0, NULL);
+    zerotimer.PWMout(true,0,MISO);
+    zerotimer.enable(true);
+}
+
+void FunctionGenerator::StartSineWaveform() {
+
+}
+
+void FunctionGenerator::StartRampWaveform() {
+
+}
+
+void FunctionGenerator::StartTriangleWaveform() {
+
 }
