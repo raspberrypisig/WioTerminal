@@ -79,6 +79,7 @@ char daysOfTheWeek[7][12] = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thurs
  void connectToWiFi(const char* ssid, const char* pwd);
  unsigned long sendNTPpacket(const char* address);
  unsigned long getNTPtime();
+ 
 
     protected:
       void Setup() override;

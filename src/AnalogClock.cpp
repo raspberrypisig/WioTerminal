@@ -8,11 +8,15 @@ void AnalogClock::Run() {
     ArduinoSketchBase::Run();
 }
 
+void alarmMatch(uint32_t flag) {
+      Serial.println("Alarm Match!");
+}
+
 void AnalogClock::Setup() {
   
-tft.fillScreen(TFT_LIGHTGREY);
+tft.fillScreen(TFT_DARKGREY);
   
-  tft.setTextColor(TFT_WHITE, TFT_LIGHTGREY);  // Adding a background colour erases previous text automatically
+  tft.setTextColor(TFT_WHITE, TFT_DARKGREY);  // Adding a background colour erases previous text automatically
   
   // Draw clock face
   tft.fillCircle(120, 120, 118, TFT_GREEN);
@@ -56,13 +60,55 @@ unsigned long realTime = getNTPtime();
 realTime += 3 * 60 * 60;
 rtc.adjust(DateTime(realTime));
 now = rtc.now();
-Serial.println(now.timestamp(DateTime::TIMESTAMP_FULL));
-//Serial.print("Time:");
-//Serial.println(boo);
+DateTime alarm = DateTime(now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second() + 1);
+   rtc.setAlarm(0,alarm); // match after 15 seconds
+    rtc.enableAlarm(0, rtc.MATCH_HHMMSS); // match Every Day
+
+    rtc.attachInterrupt(alarmMatch); 
+//Serial.println(now.timestamp(DateTime::TIMESTAMP_FULL));
 }
 
-void AnalogClock::Loop() {
 
+
+void AnalogClock::Loop() {
+  now = rtc.now();
+  hh = now.twelveHour();
+  mm = now.minute();
+  ss = now.second();
+
+    // Pre-compute hand degrees, x & y coords for a fast screen update
+    sdeg = ss*6;                  // 0-59 -> 0-354
+    mdeg = mm*6+sdeg*0.01666667;  // 0-59 -> 0-360 - includes seconds
+    hdeg = hh*30+mdeg*0.0833333;  // 0-11 -> 0-360 - includes minutes and seconds
+    hx = cos((hdeg-90)*0.0174532925);    
+    hy = sin((hdeg-90)*0.0174532925);
+    mx = cos((mdeg-90)*0.0174532925);    
+    my = sin((mdeg-90)*0.0174532925);
+    sx = cos((sdeg-90)*0.0174532925);    
+    sy = sin((sdeg-90)*0.0174532925);
+
+    if (ss==0 || initial) {
+      initial = 0;
+      // Erase hour and minute hand positions every minute
+      tft.drawLine(ohx, ohy, 120, 121, TFT_BLACK);
+      ohx = hx*62+121;    
+      ohy = hy*62+121;
+      tft.drawLine(omx, omy, 120, 121, TFT_BLACK);
+      omx = mx*84+120;    
+      omy = my*84+121;
+    }
+
+      // Redraw new hand positions, hour and minute hands not erased here to avoid flicker
+      tft.drawLine(osx, osy, 120, 121, TFT_BLACK);
+      osx = sx*90+121;    
+      osy = sy*90+121;
+      tft.drawLine(osx, osy, 120, 121, TFT_RED);
+      tft.drawLine(ohx, ohy, 120, 121, TFT_WHITE);
+      tft.drawLine(omx, omy, 120, 121, TFT_WHITE);
+      tft.drawLine(osx, osy, 120, 121, TFT_RED);
+
+    tft.fillCircle(120, 121, 3, TFT_RED);
+    //delay(5000);
 }
 
 uint8_t AnalogClock::conv2d(const char* p) {
