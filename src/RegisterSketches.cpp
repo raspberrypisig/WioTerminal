@@ -12,4 +12,5 @@ RegisterSketches::RegisterSketches() {
    Register("DACTest",            new DACTest());
    Register("PWMSquare",          new PWMSquare());
    Register("FunctionGen",        new FunctionGenerator() );
+   Register("AnalogClock",        new AnalogClock());
 }

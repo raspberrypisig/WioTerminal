@@ -10,7 +10,7 @@ void FunctionGenerator::Run() {
 }
 
 void FunctionGenerator::Setup() {
-  Serial.begin(115200);
+  //Serial.begin(115200);
 
   pinMode(WIO_5S_UP, INPUT_PULLUP);
   pinMode(WIO_5S_DOWN, INPUT_PULLUP);
@@ -20,8 +20,12 @@ void FunctionGenerator::Setup() {
 
   HomeScreen_draw();
 
-	analogWriteResolution(12);
-	analogWrite(DAC0,0);   // DAC init setup DAC pin and zero it
+  //pinMode(D1, OUTPUT);
+  //pinMode(DAC0, OUTPUT);
+	//analogWriteResolution(12);
+	//analogWrite(DAC0,0);   // DAC init setup DAC pin and zero it
+  
+  //pinMode(D0, OUTPUT);
 
   FillSineWaveLookup();
   FillTriangleLookup();
@@ -97,6 +101,7 @@ void FunctionGenerator::Loop() {
   else if (state == FunctionGeneratorProgramState::CONFIGURE_DUTY &&  digitalRead(WIO_5S_PRESS) == LOW) {
     state = FunctionGeneratorProgramState::RUNNING;
     RunningScreen();
+    state = FunctionGeneratorProgramState::RUNFOREVER;
   }
 
   else if (state == FunctionGeneratorProgramState::CONFIGURE_DUTY &&  digitalRead(WIO_5S_UP) == LOW) {
@@ -137,7 +142,10 @@ void FunctionGenerator::Loop() {
     HomeScreen_draw();
   }
 
-  delay(100);
+
+
+  delay(90);
+  
 }
 
 void FunctionGenerator::FillSineWaveLookup() {
@@ -156,14 +164,15 @@ void FunctionGenerator::FillTriangleLookup() {
 
 void FunctionGenerator::FillRampLookup() {
   for (int i=0; i<NUMBEROFPOINTS; i++) {
-    ramp_lookup[i] = i * 3000/(1.f * (NUMBEROFPOINTS - 1));
+    ramp_lookup[i] = (uint16_t) (i * 3000/(1.f * (NUMBEROFPOINTS - 1)));
+    Serial.println(ramp_lookup[i]);
   }
+
+  
 }
 
-void FunctionGenerator::Timer3Init() {
-   
-
-/*
+void FunctionGenerator::configureTimerParams() {
+  /*
   uint16_t divider  = 1;
   uint16_t compare = 0;
   tc_clock_prescaler prescaler = TC_CLOCK_PRESCALER_DIV1;
@@ -208,20 +217,50 @@ void FunctionGenerator::Timer3Init() {
   Serial.print("Compare:"); Serial.println(compare);
   Serial.print("Final freq:"); Serial.println((int)(48000000/compare));
 */
-    float freq = 1000.f * NUMBER_OF_DATA_POINTS;
+}
+
+void FunctionGenerator::Timer4Init(long freq, uint8_t duty) {
+    Serial.println("Pinmode");
+    pinMode(D1, OUTPUT);
+    Serial.println("enable");
+    zt4.enable(false);
+    Serial.println("configure");
+    zt4.configure(TC_CLOCK_PRESCALER_DIV1,       // prescaler
+          TC_COUNTER_SIZE_16BIT,       // bit width of timer/counter
+          TC_WAVE_GENERATION_MATCH_PWM, // frequency or PWM mode
+          TC_COUNT_DIRECTION_UP
+          );
+Serial.println("compare");
+  uint32_t compare = (uint32_t) 48000000/(float)freq;
+  Serial.println("match");
+  uint32_t match = compare * duty/100;
+
+  Serial.println(compare);
+  Serial.println(match);
+  zt4.setPeriodMatch(compare, match, 1);
+  if (! zt4.PWMout(true, 1, D1)) {
+    Serial.println("Failed to configure PWM output");
+  }
+  zt4.enable(true);
+  delay(20000);
+}
+
+void FunctionGenerator::Timer3Init() {
+  /*
+    float freq = 1000.f * NUMBER_OF_DATA_POINTS; //1Khz waveform
     tc_clock_prescaler  prescaler = TC_CLOCK_PRESCALER_DIV1;
     uint16_t compare = 48000000/freq;
 
-    zerotimer.enable(false);
-    zerotimer.configure(prescaler,       // prescaler
+    zt3.enable(false);
+    zt3.configure(prescaler,       // prescaler
           TC_COUNTER_SIZE_16BIT,       // bit width of timer/counter
-          TC_WAVE_GENERATION_MATCH_PWM // frequency or PWM mode
+          TC_WAVE_GENERATION_MATCH_FREQ // frequency or PWM mode
           );
 
-    zerotimer.setCompare(0, compare);
-    //zerotimer.setCallback(false, TC_CALLBACK_CC_CHANNEL0, NULL);
-    zerotimer.enable(true);
-
+    zt3.setCompare(0, compare);
+    //zt3.setCallback(false, TC_CALLBACK_CC_CHANNEL0, NULL);
+    zt3.enable(true);
+*/
 }
 
 Waveform FunctionGenerator::HomeScreen_nextWaveform() {
@@ -436,7 +475,15 @@ void FunctionGenerator::RunningScreen() {
         tft.drawNumber(freq, 160, 132);
         if (homescreen_waveform == Waveform::SQUARE) {
           tft.drawNumber(squarewave_dutycycle, 160, 192); 
-          //StartSquareWaveform(freq, squarewave_dutycycle);
+          //Serial.println(freq);
+          //Serial.println(squarewave_dutycycle);
+          Serial.println("Enter running screen: square wave");
+          StartSquareWaveform(freq, squarewave_dutycycle);
+        }
+
+        if (homescreen_waveform == Waveform::RAMP) {
+          Serial.println("Start ramp  waveform");
+          StartRampWaveform();
         }
 }
 
@@ -505,20 +552,8 @@ void FunctionGenerator::SetupDMA() {
 
 
 void FunctionGenerator::StartSquareWaveform(long freq, uint8_t duty) {
-    tc_clock_prescaler  prescaler = TC_CLOCK_PRESCALER_DIV1;
-    uint16_t compare = 48000000/freq;
-
-    zerotimer.enable(false);
-    zerotimer.configure(prescaler,       // prescaler
-          TC_COUNTER_SIZE_16BIT,       // bit width of timer/counter
-          TC_WAVE_GENERATION_MATCH_PWM // frequency or PWM mode
-          );
-
-    //zerotimer.setCompare(0, compare);
-    zerotimer.setPeriodMatch(compare,compare * duty/100,0);
-    //zerotimer.setCallback(false, TC_CALLBACK_CC_CHANNEL0, NULL);
-    zerotimer.PWMout(true,0,MISO);
-    zerotimer.enable(true);
+    Serial.println("Square wave started.");
+    Timer4Init(freq, duty);
 }
 
 void FunctionGenerator::StartSineWaveform() {
@@ -526,7 +561,9 @@ void FunctionGenerator::StartSineWaveform() {
 }
 
 void FunctionGenerator::StartRampWaveform() {
-
+  Timer3Init();
+  myDMA.changeDescriptor(descriptor, ramp_lookup);
+  ZeroDMAstatus status =  myDMA.startJob();
 }
 
 void FunctionGenerator::StartTriangleWaveform() {

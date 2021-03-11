@@ -10,6 +10,7 @@
 #include "DACTest.h"
 #include "PWMSquare.h"
 #include "FunctionGenerator.h"
+#include "AnalogClock.h"
 
 
 
